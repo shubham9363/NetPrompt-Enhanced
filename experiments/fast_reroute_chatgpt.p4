@@ -115,8 +115,7 @@ parser MyParser(packet_in packet,
  * Checksum Verification (Empty)
  *----------------------------------------------------------------*/
 control MyVerifyChecksum(inout headers hdr,
-                         inout custom_metadata meta,
-                         inout standard_metadata_t standard_metadata) {
+                         inout custom_metadata meta) {
     apply { }
 }
 
@@ -248,9 +247,13 @@ control MyIngress(inout headers hdr,
 
                 if (meta.primary_link_status == 1) {
                     // Primary link is up; forward using primary route.
+                    standard_metadata.egress_spec = meta.primary_egress_port;
+                    hdr.ethernet.dstAddr = meta.primary_next_hop_mac;
                 } else {
                     // Primary link is down; try backup routing.
                     backup_routes.apply();
+                    standard_metadata.egress_spec = meta.backup_egress_port;
+                    hdr.ethernet.dstAddr = meta.backup_next_hop_mac;
                 }
             }
         }
@@ -272,21 +275,16 @@ control MyEgress(inout headers hdr,
  * Checksum Computation
  *----------------------------------------------------------------*/
 control MyComputeChecksum(inout headers hdr,
-                          inout custom_metadata meta,
-                          inout standard_metadata_t standard_metadata) {
+                          inout custom_metadata meta) {
     apply {
-        if (hdr.ipv4.isValid()) {
-            bit<16> computed_cksum;
-            update_checksum(
-                true,
-                { hdr.ipv4.version, hdr.ipv4.ihl, hdr.ipv4.diffserv, hdr.ipv4.totalLen,
-                  hdr.ipv4.identification, hdr.ipv4.flags, hdr.ipv4.fragOffset,
-                  hdr.ipv4.ttl, hdr.ipv4.protocol, hdr.ipv4.srcAddr, hdr.ipv4.dstAddr },
-                computed_cksum,
-                HashAlgorithm.csum16
-            );
-            hdr.ipv4.hdrChecksum = computed_cksum;
-        }
+        update_checksum(
+            hdr.ipv4.isValid(),
+            { hdr.ipv4.version, hdr.ipv4.ihl, hdr.ipv4.diffserv, hdr.ipv4.totalLen,
+              hdr.ipv4.identification, hdr.ipv4.flags, hdr.ipv4.fragOffset,
+              hdr.ipv4.ttl, hdr.ipv4.protocol, hdr.ipv4.srcAddr, hdr.ipv4.dstAddr },
+            hdr.ipv4.hdrChecksum,
+            HashAlgorithm.csum16
+        );
     }
 }
 
@@ -296,12 +294,8 @@ control MyComputeChecksum(inout headers hdr,
 control MyDeparser(packet_out packet, in headers hdr) {
     apply {
         packet.emit(hdr.ethernet);
-        if (hdr.ipv4.isValid()) {
-            packet.emit(hdr.ipv4);
-        }
-        if (hdr.arp.isValid()) {
-            packet.emit(hdr.arp);
-        }
+        packet.emit(hdr.ipv4);
+        packet.emit(hdr.arp);
     }
 }
 

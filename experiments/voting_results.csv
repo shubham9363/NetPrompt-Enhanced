@@ -1,0 +1,5 @@
+LLM,Compiles,Loss,RTT,Score,Status
+ChatGPT,YES,0%,7.004ms,80.92,PASS
+Claude,YES,0%,2.920ms,100.0,PASS
+Deepseek,YES,100%,N/A,40.0,FAIL
+Baseline,YES,0%,7.200ms,80.0,PASS

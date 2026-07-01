@@ -78,7 +78,9 @@ parser MyParser(packet_in packet, out headers hdr, inout metadata meta, inout st
 control MyIngress(inout headers hdr, inout metadata meta, inout standard_metadata_t standard_metadata) {
     action drop() {
         mark_to_drop(standard_metadata); // Drop the packet
-        drop_counter.write(standard_metadata.ingress_port, drop_counter.read(standard_metadata.ingress_port) + 1);
+        bit<32> drop_val;
+        drop_counter.read(drop_val, (bit<32>)standard_metadata.ingress_port);
+        drop_counter.write((bit<32>)standard_metadata.ingress_port, drop_val + 1);
     }
 
     action forward(bit<9> port) {
@@ -86,8 +88,8 @@ control MyIngress(inout headers hdr, inout metadata meta, inout standard_metadat
     }
 
     action set_active_port(bit<9> port) {
-        active_port.write(standard_metadata.ingress_port, port);
-        h1_to_h2_active_port.write(standard_metadata.ingress_port, port);
+        active_port.write((bit<32>)standard_metadata.ingress_port, port);
+        h1_to_h2_active_port.write((bit<32>)standard_metadata.ingress_port, port);
     }
 
     table arp_table {

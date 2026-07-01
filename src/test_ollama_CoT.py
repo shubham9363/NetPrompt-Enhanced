@@ -9,7 +9,7 @@ def sanitize_filename(query):
     filename = re.sub(r'[^a-zA-Z0-9_]', '_', query)[:50]  # Replace special chars, limit length
     return f"{filename}.p4"
 
-def generate_response(query, model_name=""):
+def generate_response(query, model_name="tinyllama"):
     """Retrieves relevant documents and generates a response using Ollama with Chain of Thought reasoning."""
     relevant_docs = retrieve_documents(query, top_k=3)
 

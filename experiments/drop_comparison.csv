@@ -1,0 +1,5 @@
+name,forward_ping,forward_loss,drop_ping,drop_correct
+drop,N/A,100%,100%,YES ✅
+dropChatgpt,N/A,100%,100%,YES ✅
+dropClaude,N/A,100%,100%,YES ✅
+dropDeepseek,N/A,100%,100%,N/A (no filter table)

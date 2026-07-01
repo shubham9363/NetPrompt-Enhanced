@@ -1,0 +1,5 @@
+name,primary_ping,primary_loss,primary_rtt,reroute_works
+fast_reroute,PASS,0%,12.453 ms,N/A
+fast_reroute_claude,PASS,0%,17.856 ms,N/A
+fast_reroute_chatgpt,PASS,0%,17.053 ms,N/A
+fast_reroute_deepseek,FAIL,100%,N/A,N/A

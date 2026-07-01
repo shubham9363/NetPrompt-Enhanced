@@ -11,9 +11,6 @@
 //------------------------------------------------------------------------------
 // Define an enum for checksum algorithms. This provides an identifier for a 16-bit
 // checksum algorithm (csum16) that can be used with update_checksum.
-enum HashAlgorithm {
-    csum16
-};
 
 //------------------------------------------------------------------------------
 // Header Definitions
@@ -101,26 +98,22 @@ control MyVerifyChecksum(inout headers_t hdr, inout metadata_t meta) {
 // Checksum computation control block: computes the IPv4 header checksum.
 control MyComputeChecksum(inout headers_t hdr, inout metadata_t meta) {
     apply {
-        if (hdr.ipv4.isValid()) {
-            // Compute the IPv4 header checksum using update_checksum.
-            // The list includes the IPv4 fields. If a field is wider than 16 bits,
-            // the target splits it into 16-bit words as needed.
-            update_checksum(
-                hdr.ipv4.hdrChecksum,
-                { hdr.ipv4.version,
-                  hdr.ipv4.ihl,
-                  hdr.ipv4.diffserv,
-                  hdr.ipv4.totalLen,
-                  hdr.ipv4.identification,
-                  hdr.ipv4.flags,
-                  hdr.ipv4.fragOffset,
-                  hdr.ipv4.ttl,
-                  hdr.ipv4.protocol,
-                  hdr.ipv4.srcAddr,
-                  hdr.ipv4.dstAddr },
-                HashAlgorithm.csum16
-            );
-        }
+        update_checksum(
+            hdr.ipv4.isValid(),
+            { hdr.ipv4.version,
+              hdr.ipv4.ihl,
+              hdr.ipv4.diffserv,
+              hdr.ipv4.totalLen,
+              hdr.ipv4.identification,
+              hdr.ipv4.flags,
+              hdr.ipv4.fragOffset,
+              hdr.ipv4.ttl,
+              hdr.ipv4.protocol,
+              hdr.ipv4.srcAddr,
+              hdr.ipv4.dstAddr },
+            hdr.ipv4.hdrChecksum,
+            HashAlgorithm.csum16
+        );
     }
 }
 
@@ -144,7 +137,7 @@ control MyIngress(inout headers_t hdr,
     
     // Action to drop the packet.
     action drop() {
-        mark_to_drop();
+        mark_to_drop(standard_metadata);
     }
     
     // Table to match on the Ethernet destination address.
@@ -208,10 +201,8 @@ control MyDeparser(packet_out packet, in headers_t hdr) {
     apply {
         // Emit the Ethernet header.
         packet.emit(hdr.ethernet);
-        // If the IPv4 header is valid, emit it.
-        if (hdr.ipv4.isValid()) {
-            packet.emit(hdr.ipv4);
-        }
+        // Emit IPv4 header (emit only outputs valid headers)
+        packet.emit(hdr.ipv4);
     }
 }
 

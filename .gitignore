@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# VS Code
+.vscode/
+
+# Build
+build/
+dist/
+
+# Logs
+*.log
+
+# Packet captures
+*.pcap
+
+# Generated CSV captures
+*_capture.csv
+
+# BMv2 generated files
+*.json
+*.p4i
+
+# Runtime files
+*_regs.txt
+*_periodic*
+*_failure.txt
+
+# ChromaDB
+p4_vector_db/
+
+# Python cache
+.pytest_cache/
+
+# OS files
+.DS_Store
+Thumbs.db

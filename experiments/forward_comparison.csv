@@ -1,0 +1,5 @@
+name,pingall,rtt_avg,pkt_loss
+forward,100% success,7.212 ms,0%
+forwardChatGPT,100% success,7.101 ms,0%
+forwardClaude,100% success,2.877 ms,0%
+forwardDeepseek,0% success,N/A,100%
