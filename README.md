@@ -135,7 +135,7 @@ The deployed policy continuously feeds runtime statistics back into the retrieva
 
 ## 📸 Architecture
 
-![alt text](blob:https://markdownviewer.pages.dev/71cf1ae6-2f03-4814-b83b-25b09df053de)
+![alt text](./assets/architecture.png)
 
 ---
 
@@ -986,7 +986,7 @@ Open a Pull Request describing your proposed changes.
 
 
 
-🔗 LinkedIn: https://linkedin.com/in/<YOUR_LINKEDIN>
+🔗 LinkedIn: https://linkedin.com/in/
 
 ---
 
